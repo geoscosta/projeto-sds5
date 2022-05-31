@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                sh script: 'mvn clean package'
+            }
+        }
+        stage('Upload War To Nexus') {
+            steps {
+                script {
+                   nexusArtifactUploader artifacts: 
+                   [
+                       [
+                           artifactId: 'dsvendas', 
+                           classifier: '', 
+                           file: 'dsvendas', 
+                           type: 'war'
+                        ]
+                   ], 
+                   credentialsId: 'nexus3', 
+                   groupId: 'com.devsuperior', 
+                   nexusUrl: 'localhost:8081', 
+                   nexusVersion: 'nexus3', 
+                   protocol: 'http', 
+                   repository: 'https://github.com/geoscosta/projeto-sds5.git', 
+                   version: '0.0.1'
+                }
+            }
+        }
+    }
+}
